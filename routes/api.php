@@ -13,12 +13,11 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::post('auth/login', 'Api\\AuthController@login');
-
-Route::group(['middleware' => ['apiJwt']], function(){
-    Route::post('auth/logout', 'Api\\AuthController@logout');
-    Route::get('users', 'Api\\UserController@index');
-});
+Route::get('users', 'Api\\UserController@index');
+Route::get('users/{id}', 'Api\\UserController@show');
+Route::post('users/store', 'Api\\UserController@store');
+Route::post('users/update', 'Api\\UserController@update');
+Route::post('users/delete', 'Api\\UserController@destroy');
 
 Route::fallback(function(){
     return response()->json(['message' => 'Route not found', 'status' => 404]);

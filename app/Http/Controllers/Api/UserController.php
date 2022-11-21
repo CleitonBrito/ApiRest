@@ -17,7 +17,6 @@ class UserController extends Controller
     public function index()
     {
         $users = User::all();
-
         return response()->json($users);
     }
 
@@ -32,8 +31,10 @@ class UserController extends Controller
         User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => $request->password
+            'password' => Hash::make($request->password)
         ]);
+
+        return response()->json(['status' => 'User created with success']);
     }
 
     /**
@@ -44,7 +45,8 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        $user = User::find($id);
+        return response()->json($user);
     }
 
     /**
@@ -56,7 +58,19 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try{
+            $user = User::find($id);
+
+            $data = [
+                'name' => $request->name,
+                'email' => $request->email
+            ];
+
+            $user->update($data);
+            return response()->json(['status' => 'Updated with success']);
+        }catch(\Exception $e){
+            return response()->json(['status' => 'Error', 'message' => $e->getMessage()]);
+        }
     }
 
     /**
@@ -67,6 +81,12 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try{
+            $user = User::find($id);
+            $user->delete();
+            return response()->json(['status' => 'Deleted with success']);
+        }catch(\Exception $e){
+            return response()->json(['status' => 'Error', 'message' => $e->getMessage()]);
+        }
     }
 }
